@@ -1,0 +1,63 @@
+﻿
+
+<GenericList TList="ServiceProviders">
+    <Records >
+        <table  class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nit</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Creation Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var forecast in ServiceProviders)
+                {
+                    <tr>
+                        <td>@forecast.Nit</td>
+                        <td>@forecast.Name</td>
+                        <td>@forecast.Email</td>
+                        <td>@forecast.Creationdate</td>
+                        <td> <button class="btn btn-danger" @onclick="@(() => EliminarPelicula(forecast))">Delete</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Records>
+</GenericList>
+
+<Confirmation @ref="confirmation" onConfirm="DeleteServiceProviderConfirmation"
+              onCancel="onCancelConfirmation">
+    <div>¿Do you want delete this record?</div>
+</Confirmation>
+
+@code {
+    Confirmation confirmation;
+    [Parameter] public List<ServiceProvider> ServiceProviders { get; set; }
+
+
+
+    bool MostrarBotones = true;
+
+   void EliminarPelicula(ServiceProvider pelicula)
+    {
+        confirmation.Show();
+        peliculaABorrar = pelicula;
+
+    }
+    ServiceProvider peliculaABorrar;
+    void DeleteServiceProviderConfirmation()
+    {
+        ServiceProviders.Remove(peliculaABorrar);
+        confirmation.Hide();
+        peliculaABorrar = null;
+    }
+
+    void onCancelConfirmation()
+    {
+        confirmation.Hide();
+        peliculaABorrar = null;
+    }
+}

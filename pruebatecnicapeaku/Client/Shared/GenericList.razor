@@ -1,0 +1,36 @@
+﻿@typeparam Titem
+
+@if (TList == null)
+{
+    @if (Loading == null)
+    {
+        <text>Loading...</text>
+    }
+    else
+    {
+        @Loading
+    }
+}
+else if (TList.Count == 0)
+{
+    @if (NoRecords == null)
+    {
+        <text>There's no records to show</text>
+    }
+    else
+    {
+        @NoRecords
+    }
+}
+else
+{
+    @Records
+    
+}
+
+@code {
+    [Parameter] public RenderFragment Loading { get; set; }
+    [Parameter] public RenderFragment NoRecords { get; set; }
+    [Parameter] public RenderFragment Records { get; set; }
+    [Parameter] public List<Titem> TList { get; set; }
+}

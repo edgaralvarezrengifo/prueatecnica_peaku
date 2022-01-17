@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pruebatecnicapeaku.Server", "pruebatecnicapeaku\Server\pruebatecnicapeaku.Server.csproj", "{C008A53C-96ED-44C4-9965-795A4F890098}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pruebatecnicapeaku.Server", "pruebatecnicapeaku\Server\pruebatecnicapeaku.Server.csproj", "{C008A53C-96ED-44C4-9965-795A4F890098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pruebatecnicapeaku.Client", "pruebatecnicapeaku\Client\pruebatecnicapeaku.Client.csproj", "{39A9E009-E793-431D-A199-0D76E23887FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pruebatecnicapeaku.Client", "pruebatecnicapeaku\Client\pruebatecnicapeaku.Client.csproj", "{39A9E009-E793-431D-A199-0D76E23887FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pruebatecnicapeaku.Shared", "pruebatecnicapeaku\Shared\pruebatecnicapeaku.Shared.csproj", "{C9F1F900-CBE5-4039-B584-C88A2280175D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pruebatecnicapeaku.Shared", "pruebatecnicapeaku\Shared\pruebatecnicapeaku.Shared.csproj", "{C9F1F900-CBE5-4039-B584-C88A2280175D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

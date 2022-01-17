@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using pruebatecnicapeaku.Client.Repositories;
 
 namespace pruebatecnicapeaku.Client
 {
@@ -19,7 +20,15 @@ namespace pruebatecnicapeaku.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+            ConfigureServices(builder.Services);
+
             await builder.Build().RunAsync();
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+           
+            services.AddSingleton<IRepository, Repository>();
         }
     }
 }

@@ -1,7 +1,29 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@inject IRepository repository
 
-Welcome to your new app.
+<div>
+    <h3>Service Providers</h3>
+    <ServiceProviderList ServiceProviders="ServiceProviders" />
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<button  class="btn btn-info" @onclick="AddServiceProvider">Add Service Provider</button>
+
+@code {
+
+    private List<ServiceProvider> ServiceProviders;
+
+    protected override void OnInitialized()
+    {
+        ServiceProviders = repository.GetServiceproviders();
+    }
+
+    void AddServiceProvider()
+    {
+        ServiceProviders.Add(new ServiceProvider() { Id = 5, Email = "test5@gmail.com", Name = "Test5", Nit = 890312775, Creationdate = DateTime.Now });
+    
+    }
+
+
+
+}
