@@ -1,16 +1,29 @@
 ﻿@page "/counter"
 
-<h1>Counter</h1>
+@inject IRepository repository
 
-<p>Current count: @currentCount</p>
+<div>
+    <h3>Services</h3>
+    <ServiceList Services="Services" />
+</div>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-info" @onclick="AddServiceProvider">Add Service</button>
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
+    private List<Service> Services;
+
+    protected override void OnInitialized()
     {
-        currentCount++;
+        Services= repository.GetServices();
     }
+
+    void AddServiceProvider()
+    {
+        Services.Add(new Service() { Id = 2, IdServiceProvider = 2, Country = "Colombia", Name = "Service Test 2", price = 3000 });
+
+    }
+
+
+
 }

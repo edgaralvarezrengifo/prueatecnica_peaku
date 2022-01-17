@@ -23,7 +23,7 @@ namespace pruebatecnicapeaku.Client.Repositories
         {
             return new List<Service>()
             {
-                new Service(){Id=1,IdServiceProvider=1,Country="Colombia",Name="",price=2000}
+                new Service(){Id=1,IdServiceProvider=1,Name="Service test1",Country="Colombia",price=2000}
             };
         }
 

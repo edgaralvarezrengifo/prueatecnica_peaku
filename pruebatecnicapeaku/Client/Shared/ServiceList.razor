@@ -1,0 +1,64 @@
+﻿<GenericList TList="Services">
+    <Records>
+        <table class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Service Name</th>
+                    <th>Provider</th>
+                    <th>Country</th>
+                    <th>Price</th>
+                    <th>Creation Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var forecast in Services)
+                {
+                <tr>
+
+                    <td>@forecast.Name</td>
+                    <td>@forecast.IdServiceProvider</td>
+                    <td>@forecast.Country </td>
+                    <td>@forecast.price </td>
+                    <td>@forecast.Creationdate</td>
+                    <td> <button class="btn btn-danger" @onclick="@(() => DeleteService(forecast))">Delete</button></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </Records>
+</GenericList>
+
+<Confirmation @ref="confirmation" onConfirm="DeleteServiceConfirmation"
+              onCancel="onCancelConfirmation">
+    <div>¿Do you want delete this record?</div>
+</Confirmation>
+
+@code {
+    Confirmation confirmation;
+    [Parameter] public List<Service> Services { get; set; }
+
+
+
+    bool MostrarBotones = true;
+
+    void DeleteService(Service service)
+    {
+        confirmation.Show();
+        deleteservice = service;
+
+    }
+    Service deleteservice;
+    void DeleteServiceConfirmation()
+    {
+        Services.Remove(deleteservice);
+        confirmation.Hide();
+        deleteservice = null;
+    }
+
+    void onCancelConfirmation()
+    {
+        confirmation.Hide();
+        deleteservice = null;
+    }
+}
