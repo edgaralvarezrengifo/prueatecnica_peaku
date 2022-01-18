@@ -1,29 +1,92 @@
 ﻿@page "/"
 
 @inject IRepository repository
+@inject IToastService toastService
 
 <div>
     <h3>Service Providers</h3>
-    <ServiceProviderList ServiceProviders="ServiceProviders" />
+    <ServiceProviderList ServiceProviders="ServiceProviders" Id="id" OnValidSubmit="showedit" />
 </div>
 
-<button  class="btn btn-info" @onclick="AddServiceProvider">Add Service Provider</button>
+
+
+@if (isnew && id==0)
+{
+    <ServiceProviderForm OnValidSubmit="AddServiceProvider" newServiceProvider="newServiceProvider" option="Create"></ServiceProviderForm>
+}
+
+else
+{
+    <button class="btn btn-outline-info" @onclick="shownew">Add Service Provider</button>
+}
+
+@if (id != 0)
+{
+    <ServiceProviderForm OnValidSubmit="EditServiceProvider" newServiceProvider="newServiceProvider" option="Edit"></ServiceProviderForm>
+
+}
+
+
 
 @code {
 
+    private bool isnew;
+
+    private bool isedit;
+
+    int id=0;
+    private ServiceProvider newServiceProvider = new ServiceProvider();
     private List<ServiceProvider> ServiceProviders;
 
     protected override void OnInitialized()
     {
         ServiceProviders = repository.GetServiceproviders();
+        isnew = false;
+        isedit = false;
+
     }
+
+    void shownew()
+    {
+        newServiceProvider = new ServiceProvider();
+        isnew = true;
+        isedit = false;
+        id = 0;
+
+    }
+
+
+    void showedit(ServiceProvider serviceprovider)
+    {
+        id = serviceprovider.Id;
+        newServiceProvider = ServiceProviders.Where(x => x.Id == id).FirstOrDefault();
+        Console.WriteLine("el id es:" + id);
+    }
+
+
 
     void AddServiceProvider()
     {
-        ServiceProviders.Add(new ServiceProvider() { Id = 5, Email = "test5@gmail.com", Name = "Test5", Nit = 890312775, Creationdate = DateTime.Now });
-    
+
+        ServiceProviders.Add(new ServiceProvider() { Id = 5, Email = newServiceProvider.Email, Name = newServiceProvider.Name, Nit = newServiceProvider.Nit, Creationdate = DateTime.Now });
+        isnew = false;
+
+        id = 0;
+        newServiceProvider = null;
+
+        toastService.ShowSuccess("Record created successfully", "Congratulations!");
+
     }
 
+    void EditServiceProvider()
+    {
+        var indexOf = ServiceProviders.IndexOf(ServiceProviders.Find(p => p.Id == newServiceProvider.Id));
+        ServiceProviders[indexOf] = newServiceProvider;
+        id = 0;
+        newServiceProvider = null;
 
+        toastService.ShowSuccess("Record edited successfully", "Congratulations!");
+
+    }
 
 }

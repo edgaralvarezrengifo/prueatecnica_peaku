@@ -20,7 +20,9 @@
                         <td>@forecast.Name</td>
                         <td>@forecast.Email</td>
                         <td>@forecast.Creationdate</td>
-                        <td> <button class="btn btn-danger" @onclick="@(() => EliminarPelicula(forecast))">Delete</button></td>
+                        <td> <button class="btn btn-outline-danger" @onclick="@(() => DeleteServiceProvider(forecast))">Delete</button>
+                             <button class="btn btn-outline-primary" @onclick="@(() => OnValidSubmit.InvokeAsync(forecast))">Edit</button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -36,28 +38,31 @@
 @code {
     Confirmation confirmation;
     [Parameter] public List<ServiceProvider> ServiceProviders { get; set; }
+    [Parameter] public int Id { get; set; }
+    [Parameter] public EventCallback <ServiceProvider> OnValidSubmit{ get; set; }
 
 
 
-    bool MostrarBotones = true;
 
-   void EliminarPelicula(ServiceProvider pelicula)
+    void DeleteServiceProvider(ServiceProvider serviceprovider)
     {
         confirmation.Show();
-        peliculaABorrar = pelicula;
+        delserviceprovider = serviceprovider;
 
     }
-    ServiceProvider peliculaABorrar;
+    ServiceProvider delserviceprovider;
     void DeleteServiceProviderConfirmation()
     {
-        ServiceProviders.Remove(peliculaABorrar);
+        ServiceProviders.Remove(delserviceprovider);
         confirmation.Hide();
-        peliculaABorrar = null;
+        delserviceprovider = null;
     }
+
+   
 
     void onCancelConfirmation()
     {
         confirmation.Hide();
-        peliculaABorrar = null;
+        delserviceprovider = null;
     }
 }

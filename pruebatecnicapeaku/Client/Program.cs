@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using pruebatecnicapeaku.Client.Repositories;
+using Blazored.Toast;
 
 namespace pruebatecnicapeaku.Client
 {
@@ -29,6 +30,7 @@ namespace pruebatecnicapeaku.Client
         {
            
             services.AddSingleton<IRepository, Repository>();
+            services.AddBlazoredToast();
         }
     }
 }

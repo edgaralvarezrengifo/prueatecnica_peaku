@@ -1,0 +1,55 @@
+﻿<div class="row">
+    <fieldset>
+        @if (option.Equals("Edit"))
+        {
+            <legend>Edit Services Provider</legend>
+        }
+        else
+        {
+            <legend>Create Services Provider</legend>
+        }
+
+        <EditForm Model="newServiceProvider" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>Name:</label>
+                <div>
+                    <InputText class="form-control" @bind-Value="@newServiceProvider.Name" />
+                    <ValidationMessage For="@(() => newServiceProvider.Name)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nit:</label>
+                        <div>
+                            <InputNumber class="form-control" @bind-Value="@newServiceProvider.Nit" />
+                            <ValidationMessage For="@(() => newServiceProvider.Nit)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <div>
+                            <InputText class="form-control" @bind-Value="@newServiceProvider.Email" />
+                            <ValidationMessage For="@(() => newServiceProvider.Email)" />
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <button class="btn btn-outline-success" type="submit">Save</button>
+        </EditForm>
+    </fieldset>
+</div>
+
+@code {
+    [Parameter] public ServiceProvider newServiceProvider {get; set; }
+    [Parameter] public string option { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+
+}
