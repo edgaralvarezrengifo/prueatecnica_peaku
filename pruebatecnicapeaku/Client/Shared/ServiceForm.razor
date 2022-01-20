@@ -1,0 +1,66 @@
+﻿<div class="row">
+    <fieldset>
+        @if (option.Equals("Edit"))
+        {
+            <legend>Edit Service</legend>
+        }
+        else
+        {
+            <legend>Create Service</legend>
+        }
+
+        <EditForm Model="newService" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <div class=" form-group">
+                <label>Provider:</label>
+                <div>
+                    <InputSelect class="form-control" @bind-Value="@serviceproviderID">
+                        @foreach (var serviceprovider in ServiceProviders)
+                        {
+                            <option value="@serviceprovider.Id">@serviceprovider.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <div>
+                    <InputText class="form-control" @bind-Value="@newService.Name" />
+                    <ValidationMessage For="@(() => newService.Name)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Country:</label>
+                        <div>
+                            <InputText class="form-control" @bind-Value="@newService.Country" />
+                            <ValidationMessage For="@(() => newService.Country)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Price:</label>
+                        <div>
+                            <InputNumber class="form-control" @bind-Value="@newService.price" />
+                            <ValidationMessage For="@(() => newService.price)" />
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <button class="btn btn-outline-success" type="submit">Save</button>
+        </EditForm>
+    </fieldset>
+</div>
+
+@code {
+    [Parameter] public Service newService { get; set; }
+    [Parameter] public string option { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public List<ServiceProvider> ServiceProviders { get; set; }
+    [Parameter] public string serviceproviderID { get; set; }
+}

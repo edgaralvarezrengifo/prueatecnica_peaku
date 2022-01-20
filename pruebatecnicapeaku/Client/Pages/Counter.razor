@@ -1,26 +1,111 @@
 ﻿@page "/counter"
 
 @inject IRepository repository
+@inject IToastService toastService
 
 <div>
     <h3>Services</h3>
     <ServiceList Services="Services" />
 </div>
 
-<button class="btn btn-info" @onclick="AddServiceProvider">Add Service</button>
+@if (isnew && id == 0)
+{
+    <ServiceForm OnValidSubmit="AddServiceProvider" newService="newService" ServiceProviders="ServiceProviders" option="Create"></ServiceForm>
+}
+
+else
+{
+    <button class="btn btn-outline-info" @onclick="shownew">Add Service</button>
+}
+
+@if (id != 0)
+{
+    <ServiceForm OnValidSubmit="EditServiceProvider" newService="newService" ServiceProviders="ServiceProviders" option="Edit"></ServiceForm>
+
+}
 
 @code {
 
     private List<Service> Services;
+    private List<ServiceProvider> ServiceProviders;
+    private string serviceproviderID;
 
     protected override void OnInitialized()
     {
-        Services= repository.GetServices();
+        Services = repository.GetServices();
+        ServiceProviders = repository.GetServiceproviders();
+        isnew = false;
+        isedit = false;
     }
 
-    void AddServiceProvider()
+    async Task AddServiceProvider()
     {
-        Services.Add(new Service() { Id = 2, IdServiceProvider = 2, Country = "Colombia", Name = "Service Test 2", price = 3000 });
+        isnew = false;
+        newService.Creationdate = DateTime.Now;
+        newService.IdServiceProvider = Convert.ToInt32(serviceproviderID);
+
+        var httpResponse = await repository.Post("api/Service", newService);
+        if (httpResponse.Error)
+        {
+            var body = await httpResponse.HttpResponseMessage.Content.ReadAsStringAsync();
+            toastService.ShowError(body, "Error!");
+        }
+        else
+        {
+
+            Services.Add(newService);
+
+            id = 0;
+            newService = null;
+
+            toastService.ShowSuccess("Record created successfully", "Congratulations!");
+        }
+
+
+    }
+
+
+
+
+    private bool isnew;
+
+    private bool isedit;
+
+    int id = 0;
+    private Service newService = new Service();
+
+
+
+
+    void shownew()
+    {
+        newService = new Service();
+        isnew = true;
+        isedit = false;
+        id = 0;
+
+    }
+
+
+    void showedit(Service service)
+    {
+        id = service.Id;
+        newService = Services.Where(x => x.Id == id).FirstOrDefault();
+        Console.WriteLine("el id es:" + id);
+    }
+
+
+
+
+
+    void EditServiceProvider()
+    {
+        var indexOf = Services.IndexOf(Services.Find(p => p.Id == newService.Id));
+        Services[indexOf] = newService;
+        id = 0;
+        newService = null;
+
+        toastService.ShowSuccess("Record edited successfully", "Congratulations!");
 
     }
 
