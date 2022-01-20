@@ -1,8 +1,8 @@
-﻿
-
+﻿@inject IToastService toastService
+@inject IRepository repository
 <GenericList TList="ServiceProviders">
-    <Records >
-        <table  class="table table-striped" style="width:100%">
+    <Records>
+        <table class="table table-striped" style="width:100%">
             <thead>
                 <tr>
                     <th>Nit</th>
@@ -20,8 +20,9 @@
                         <td>@forecast.Name</td>
                         <td>@forecast.Email</td>
                         <td>@forecast.Creationdate</td>
-                        <td> <button class="btn btn-outline-danger" @onclick="@(() => DeleteServiceProvider(forecast))">Delete</button>
-                             <button class="btn btn-outline-primary" @onclick="@(() => OnValidSubmit.InvokeAsync(forecast))">Edit</button>
+                        <td>
+                            <button class="btn btn-outline-danger" @onclick="@(() => DeleteServiceProvider(forecast))">Delete</button>
+                            <button class="btn btn-outline-primary" @onclick="@(() => OnValidSubmit.InvokeAsync(forecast))">Edit</button>
                         </td>
                     </tr>
                 }
@@ -39,7 +40,7 @@
     Confirmation confirmation;
     [Parameter] public List<ServiceProvider> ServiceProviders { get; set; }
     [Parameter] public int Id { get; set; }
-    [Parameter] public EventCallback <ServiceProvider> OnValidSubmit{ get; set; }
+    [Parameter] public EventCallback<ServiceProvider> OnValidSubmit { get; set; }
 
 
 
@@ -51,18 +52,28 @@
 
     }
     ServiceProvider delserviceprovider;
-    void DeleteServiceProviderConfirmation()
+    async Task DeleteServiceProviderConfirmation()
     {
-        ServiceProviders.Remove(delserviceprovider);
-        confirmation.Hide();
-        delserviceprovider = null;
+        var responeHttp = await repository.Delete($"api/ServiceProvider/{delserviceprovider.Id}");
+        if (responeHttp.Error)
+        {
+            var body = await responeHttp.HttpResponseMessage.Content.ReadAsStringAsync();
+            toastService.ShowError(body, "Error!");
+        }
+        else
+        {
+            ServiceProviders.Remove(delserviceprovider);
+            confirmation.Hide();
+            delserviceprovider = null;
+            toastService.ShowSuccess("Record deleted successfully", "Congratulations!");
+        }
     }
 
-   
+
 
     void onCancelConfirmation()
     {
         confirmation.Hide();
         delserviceprovider = null;
     }
-}
+    }

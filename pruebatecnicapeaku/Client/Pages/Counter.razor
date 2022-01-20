@@ -5,7 +5,7 @@
 
 <div>
     <h3>Services</h3>
-    <ServiceList Services="Services" />
+    <ServiceList Services="Services"  OnValidSubmit="showedit" />
 </div>
 
 @if (isnew && id == 0)
@@ -30,10 +30,15 @@ else
     private List<ServiceProvider> ServiceProviders;
     private string serviceproviderID;
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        Services = repository.GetServices();
-        ServiceProviders = repository.GetServiceproviders();
+        var responsehttp = await repository.Get<List<ServiceProvider>>("api/ServiceProvider");
+        ServiceProviders = responsehttp.Response;
+
+        var responsehttp2 = await repository.Get<List<Service>>("api/Service");
+        Services = responsehttp2.Response;
+
+        //ServiceProviders = repository.GetServiceproviders();
         isnew = false;
         isedit = false;
     }
@@ -98,14 +103,29 @@ else
 
 
 
-    void EditServiceProvider()
+    async Task EditServiceProvider()
     {
-        var indexOf = Services.IndexOf(Services.Find(p => p.Id == newService.Id));
-        Services[indexOf] = newService;
-        id = 0;
-        newService = null;
 
-        toastService.ShowSuccess("Record edited successfully", "Congratulations!");
+        var httpResponse = await repository.Put("api/Service", newService);
+
+
+        if (httpResponse.Error)
+        {
+            var body = await httpResponse.HttpResponseMessage.Content.ReadAsStringAsync();
+            toastService.ShowError(body, "Error!");
+        }
+        else
+        {
+
+            var indexOf = Services.IndexOf(Services.Find(p => p.Id == newService.Id));
+            Services[indexOf] = newService;
+            id = 0;
+            newService = null;
+
+            toastService.ShowSuccess("Record edited successfully", "Congratulations!");
+        }
+
+
 
     }
 

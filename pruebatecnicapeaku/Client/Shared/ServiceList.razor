@@ -1,4 +1,7 @@
-﻿<GenericList TList="Services">
+﻿@inject IRepository repository
+@inject IToastService toastService
+
+<GenericList TList="Services">
     <Records>
         <table class="table table-striped" style="width:100%">
             <thead>
@@ -14,15 +17,18 @@
             <tbody>
                 @foreach (var forecast in Services)
                 {
-                <tr>
+                    <tr>
 
-                    <td>@forecast.Name</td>
-                    <td>@forecast.IdServiceProvider</td>
-                    <td>@forecast.Country </td>
-                    <td>@forecast.price </td>
-                    <td>@forecast.Creationdate</td>
-                    <td> <button class="btn btn-danger" @onclick="@(() => DeleteService(forecast))">Delete</button></td>
-                </tr>
+                        <td>@forecast.Name</td>
+                        <td>@forecast.IdServiceProvider</td>
+                        <td>@forecast.Country </td>
+                        <td>@forecast.price </td>
+                        <td>@forecast.Creationdate</td>
+                        <td>
+                            <button class="btn btn-outline-danger" @onclick="@(() => DeleteService(forecast))">Delete</button>
+                            <button class="btn btn-outline-primary" @onclick="@(() => OnValidSubmit.InvokeAsync(forecast))">Edit</button>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -37,7 +43,7 @@
 @code {
     Confirmation confirmation;
     [Parameter] public List<Service> Services { get; set; }
-
+    [Parameter] public EventCallback<Service> OnValidSubmit { get; set; }
 
 
     bool MostrarBotones = true;
@@ -49,11 +55,21 @@
 
     }
     Service deleteservice;
-    void DeleteServiceConfirmation()
+    async Task DeleteServiceConfirmation()
     {
-        Services.Remove(deleteservice);
-        confirmation.Hide();
-        deleteservice = null;
+        var responeHttp = await repository.Delete($"api/Service/{deleteservice.Id}");
+        if (responeHttp.Error)
+        {
+            var body = await responeHttp.HttpResponseMessage.Content.ReadAsStringAsync();
+            toastService.ShowError(body, "Error!");
+        }
+        else
+        {
+            Services.Remove(deleteservice);
+            confirmation.Hide();
+            deleteservice = null;
+            toastService.ShowSuccess("Record deleted successfully", "Congratulations!");
+        }
     }
 
     void onCancelConfirmation()

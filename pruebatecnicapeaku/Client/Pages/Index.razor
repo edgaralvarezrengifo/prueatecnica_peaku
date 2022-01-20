@@ -38,9 +38,11 @@ else
     private ServiceProvider newServiceProvider = new ServiceProvider();
     private List<ServiceProvider> ServiceProviders;
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        ServiceProviders = repository.GetServiceproviders();
+        var responsehttp = await repository.Get<List<ServiceProvider>>("api/ServiceProvider");
+        ServiceProviders = responsehttp.Response;
+        //ServiceProviders = repository.GetServiceproviders();
         isnew = false;
         isedit = false;
 
@@ -92,14 +94,27 @@ else
 
     }
 
-    void EditServiceProvider()
+    async Task EditServiceProvider()
     {
-        var indexOf = ServiceProviders.IndexOf(ServiceProviders.Find(p => p.Id == newServiceProvider.Id));
-        ServiceProviders[indexOf] = newServiceProvider;
-        id = 0;
-        newServiceProvider = null;
+        var httpResponse = await repository.Put("api/ServiceProvider", newServiceProvider);
 
-        toastService.ShowSuccess("Record edited successfully", "Congratulations!");
+        if (httpResponse.Error)
+        {
+            var body = await httpResponse.HttpResponseMessage.Content.ReadAsStringAsync();
+            toastService.ShowError(body, "Error!");
+        }
+        else
+        {
+
+            var indexOf = ServiceProviders.IndexOf(ServiceProviders.Find(p => p.Id == newServiceProvider.Id));
+            ServiceProviders[indexOf] = newServiceProvider;
+            id = 0;
+            newServiceProvider = null;
+
+            toastService.ShowSuccess("Record edited successfully", "Congratulations!");
+        }
+
+
 
     }
 
