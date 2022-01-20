@@ -29,7 +29,7 @@ namespace pruebatecnicapeaku.Client
         private static void ConfigureServices(IServiceCollection services)
         {
            
-            services.AddSingleton<IRepository, Repository>();
+            services.AddScoped<IRepository, Repository>();
             services.AddBlazoredToast();
         }
     }

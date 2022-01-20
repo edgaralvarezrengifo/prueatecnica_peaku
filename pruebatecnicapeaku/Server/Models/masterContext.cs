@@ -1,36 +1,32 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using pruebatecnicapeaku.Shared.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 #nullable disable
 
 namespace pruebatecnicapeaku.Server.Models
 {
-    public partial class masterContext : DbContext
+    public  class ApplicationDbContext : DbContext
     {
-        public masterContext()
-        {
-        }
 
-        public masterContext(DbContextOptions<masterContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Initial Catalog=master;integrated security=True;");
-            }
-        }
-
+   
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            OnModelCreatingPartial(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+       
+
+        public DbSet<Service> Service{get;set;}
+        public DbSet<ServiceProvider> ServiceProviders { get; set; }
     }
 }

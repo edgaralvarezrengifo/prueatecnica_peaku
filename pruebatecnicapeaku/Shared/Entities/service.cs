@@ -18,5 +18,6 @@ namespace pruebatecnicapeaku.Shared.Entities
         public decimal price { get; set; }
         [Required]
         public DateTime Creationdate { get; set; }
+        public ServiceProvider serviceprovider { get; set; }
     }
 }

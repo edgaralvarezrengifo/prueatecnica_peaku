@@ -65,16 +65,30 @@ else
 
 
 
-    void AddServiceProvider()
+    private async Task  AddServiceProvider()
     {
 
-        ServiceProviders.Add(new ServiceProvider() { Id = 5, Email = newServiceProvider.Email, Name = newServiceProvider.Name, Nit = newServiceProvider.Nit, Creationdate = DateTime.Now });
+
         isnew = false;
+        newServiceProvider.Creationdate = DateTime.Now;
 
-        id = 0;
-        newServiceProvider = null;
+        var httpResponse = await repository.Post("api/ServiceProvider", newServiceProvider);
+        if (httpResponse.Error)
+        {
+            var body = await httpResponse.HttpResponseMessage.Content.ReadAsStringAsync();
+            toastService.ShowError(body, "Error!");
+        }
+        else
+        {
+            ServiceProviders.Add(newServiceProvider);
 
-        toastService.ShowSuccess("Record created successfully", "Congratulations!");
+            id = 0;
+            newServiceProvider = null;
+
+            toastService.ShowSuccess("Record created successfully", "Congratulations!");
+        }
+
+
 
     }
 
