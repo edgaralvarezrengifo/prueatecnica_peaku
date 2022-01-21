@@ -1,0 +1,81 @@
+﻿<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        @foreach (var link in Links)
+        {
+            <li @onclick="@(() => InternalSelectedPage(link))"
+                style="cursor: pointer;"
+                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                <span class="page-link" href="#">@link.Text</span>
+            </li>
+        }
+    </ul>
+</nav>
+
+@code {
+    [Parameter] public int ActualPage { get; set; } = 1;
+    [Parameter] public int TotalPages{ get; set; }
+    [Parameter] public int Radius { get; set; } = 3;
+    [Parameter] public EventCallback<int> SelectedPage { get; set; }
+    List<PagesModel> Links = new List<PagesModel>();
+
+    private async Task InternalSelectedPage(PagesModel pageModel)
+    {
+        if (pageModel.Page == ActualPage)
+        {
+            return;
+        }
+
+        if (!pageModel.Enabled)
+        {
+            return;
+        }
+
+        await SelectedPage.InvokeAsync(pageModel.Page);
+    }
+
+    protected override void OnParametersSet()
+    {
+        Links = new List<PagesModel>();
+
+        var enabledPreviusLink = ActualPage != 1;
+        var previusLink = ActualPage - 1;
+        Links.Add(new PagesModel(previusLink, enabledPreviusLink, "Previous"));
+
+        for (int i = 1; i <= TotalPages; i++)
+        {
+            if (i >= ActualPage - Radius && i <= ActualPage + Radius)
+            {
+                Links.Add(new PagesModel(i) { Active = ActualPage == i });
+            }
+        }
+
+        var enabledNextLink = ActualPage != TotalPages;
+        var nextLink = ActualPage + 1;
+        Links.Add(new PagesModel(nextLink, enabledNextLink, "Next"));
+    }
+
+
+    class PagesModel
+    {
+
+        public PagesModel(int pagina)
+            : this(pagina, true)
+        { }
+
+        public PagesModel(int pagina, bool habilitada)
+            : this(pagina, habilitada, pagina.ToString())
+        { }
+
+        public PagesModel(int page, bool enabled, string text)
+        {
+            Page = page;
+            Enabled = enabled;
+            Text = text;
+        }
+
+        public string Text { get; set; }
+        public int Page { get; set; }
+        public bool Enabled { get; set; } = true;
+        public bool Active { get; set; } = false;
+    }
+}

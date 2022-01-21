@@ -6,6 +6,9 @@
 <div>
     <h3>Service Providers</h3>
     <ServiceProviderList ServiceProviders="ServiceProviders" Id="id" OnValidSubmit="showedit" />
+    <div class="col-md-3" style="padding-left:0px;">
+        <Pagination ActualPage="actualpage" TotalPages="totalpages" SelectedPage="selectedpage"/>
+    </div>
 </div>
 
 
@@ -40,11 +43,32 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        var responsehttp = await repository.Get<List<ServiceProvider>>("api/ServiceProvider");
-        ServiceProviders = responsehttp.Response;
-        //ServiceProviders = repository.GetServiceproviders();
+
+        await LoadData(1);
         isnew = false;
         isedit = false;
+    }
+
+    private async Task LoadData(int page)
+    {
+
+        var responsehttp = await repository.Get<List<ServiceProvider>>($"api/ServiceProvider?page={page}");
+        if (!responsehttp.Error)
+        {
+            ServiceProviders = responsehttp.Response;
+            var count = responsehttp.HttpResponseMessage.Headers.GetValues("countrecords").FirstOrDefault();
+            totalpages= int.Parse(responsehttp.HttpResponseMessage.Headers.GetValues("totalpages").FirstOrDefault());
+        }
+    }
+
+    private int actualpage=1;
+
+    private int totalpages;
+
+    private async Task selectedpage(int page)
+    {
+        actualpage = page;
+        await LoadData(actualpage);
 
     }
 
@@ -88,6 +112,7 @@ else
             newServiceProvider = null;
 
             toastService.ShowSuccess("Record created successfully", "Congratulations!");
+            await LoadData(actualpage);
         }
 
 

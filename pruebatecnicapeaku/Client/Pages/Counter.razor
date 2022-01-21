@@ -5,7 +5,10 @@
 
 <div>
     <h3>Services</h3>
-    <ServiceList Services="Services"  OnValidSubmit="showedit" />
+    <ServiceList Services="Services" OnValidSubmit="showedit" />
+    <div class="col-md-3" style="padding-left:0px;">
+        <Pagination ActualPage="actualpage" TotalPages="totalpages" SelectedPage="selectedpage" />
+    </div>
 </div>
 
 @if (isnew && id == 0)
@@ -35,13 +38,39 @@ else
         var responsehttp = await repository.Get<List<ServiceProvider>>("api/ServiceProvider");
         ServiceProviders = responsehttp.Response;
 
-        var responsehttp2 = await repository.Get<List<Service>>("api/Service");
-        Services = responsehttp2.Response;
+        await LoadData(1);
 
         //ServiceProviders = repository.GetServiceproviders();
         isnew = false;
         isedit = false;
     }
+
+
+    private async Task LoadData(int page)
+    {
+
+        var responsehttp = await repository.Get<List<Service>>($"api/Service?page={page}");
+        if (!responsehttp.Error)
+        {
+            Services = responsehttp.Response;
+            var count = responsehttp.HttpResponseMessage.Headers.GetValues("countrecords").FirstOrDefault();
+            totalpages = int.Parse(responsehttp.HttpResponseMessage.Headers.GetValues("totalpages").FirstOrDefault());
+        }
+    }
+
+    private int actualpage = 1;
+
+    private int totalpages;
+
+    private async Task selectedpage(int page)
+    {
+        actualpage = page;
+        await LoadData(actualpage);
+
+    }
+
+
+
 
     async Task AddServiceProvider()
     {
@@ -64,6 +93,7 @@ else
             newService = null;
 
             toastService.ShowSuccess("Record created successfully", "Congratulations!");
+            await LoadData(actualpage);
         }
 
 

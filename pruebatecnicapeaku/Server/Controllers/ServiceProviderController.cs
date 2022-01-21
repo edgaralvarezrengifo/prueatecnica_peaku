@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pruebatecnicapeaku.Server.Models;
+using pruebatecnicapeaku.Shared.DTOs;
+using pruebatecnicapeaku.Server.Helpers;
 using pruebatecnicapeaku.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using pruebatecnicapeaku.Server.Helpers;
 
 namespace pruebatecnicapeaku.Server.Controllers
 {
@@ -51,8 +54,10 @@ namespace pruebatecnicapeaku.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ServiceProvider>>> Get(){
-            return await context.ServiceProviders.ToListAsync();
+        public async Task<ActionResult<List<ServiceProvider>>> Get([FromQuery] Pagin  pagin){
+            var queryable = context.ServiceProviders.AsQueryable();
+            await HttpContext.InsertParametersPaginResponse(queryable, pagin.NRecords);
+            return await queryable.Pagionation(pagin).ToListAsync();
         }
 
         [HttpGet("search/{day}")]

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using pruebatecnicapeaku.Server.Helpers;
 using pruebatecnicapeaku.Server.Models;
+using pruebatecnicapeaku.Shared.DTOs;
 using pruebatecnicapeaku.Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -52,9 +54,11 @@ namespace pruebatecnicapeaku.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Service>>> Get()
+        public async Task<ActionResult<List<Service>>> Get([FromQuery] Pagin pagin)
         {
-            return await context.Service.ToListAsync();
+            var queryable = context.Service.AsQueryable();
+            await HttpContext.InsertParametersPaginResponse(queryable, pagin.NRecords);
+            return await queryable.Pagionation(pagin).ToListAsync();
         }
 
         [HttpGet("search/{providername}")]
