@@ -11,24 +11,37 @@
                     <th>Country</th>
                     <th>Price</th>
                     <th>Creation Date</th>
-                    <th>Actions</th>
+                    <AuthorizeView Roles="admin">
+                        <Authorized>
+                            <th>Actions</th>
+                        </Authorized>
+
+                    </AuthorizeView>
+
+                   
                 </tr>
             </thead>
             <tbody>
                 @foreach (var forecast in Services)
                 {
-                    <tr>
+                <tr>
 
-                        <td>@forecast.Name</td>
-                        <td>@forecast.IdServiceProvider</td>
-                        <td>@forecast.Country </td>
-                        <td>@forecast.price </td>
-                        <td>@forecast.Creationdate</td>
-                        <td>
-                            <button class="btn btn-outline-danger" @onclick="@(() => DeleteService(forecast))">Delete</button>
-                            <button class="btn btn-outline-primary" @onclick="@(() => OnValidSubmit.InvokeAsync(forecast))">Edit</button>
-                        </td>
-                    </tr>
+                    <td>@forecast.Name</td>
+                    <td>@forecast.IdServiceProvider</td>
+                    <td>@forecast.Country </td>
+                    <td>@forecast.price </td>
+                    <td>@forecast.Creationdate</td>
+                    <AuthorizeView Roles="admin">
+                        <Authorized>
+                            <td>
+                                <button class="btn btn-outline-danger" @onclick="@(() => DeleteService(forecast))">Delete</button>
+                                <button class="btn btn-outline-primary" @onclick="@(() => OnValidSubmit.InvokeAsync(forecast))">Edit</button>
+                            </td>
+                        </Authorized>
+
+                    </AuthorizeView>
+                   
+                </tr>
                 }
             </tbody>
         </table>

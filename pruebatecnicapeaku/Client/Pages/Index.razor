@@ -2,34 +2,39 @@
 
 @inject IRepository repository
 @inject IToastService toastService
+@*@attribute [Authorize(Roles = "admin")]*@
 
-<div>
-    <h3>Service Providers</h3>
-    <ServiceProviderList ServiceProviders="ServiceProviders" Id="id" OnValidSubmit="showedit" />
-    <div class="col-md-3" style="padding-left:0px;">
-        <Pagination ActualPage="actualpage" TotalPages="totalpages" SelectedPage="selectedpage"/>
-    </div>
-</div>
+<AuthorizeView>
+    <Authorized>
 
-
-
-@if (isnew && id==0)
-{
-    <ServiceProviderForm OnValidSubmit="AddServiceProvider" newServiceProvider="newServiceProvider" option="Create"></ServiceProviderForm>
-}
-
-else
-{
-    <button class="btn btn-outline-info" @onclick="shownew">Add Service Provider</button>
-}
-
-@if (id != 0)
-{
-    <ServiceProviderForm OnValidSubmit="EditServiceProvider" newServiceProvider="newServiceProvider" option="Edit"></ServiceProviderForm>
-
-}
+        <div>
+            <h3>Service Providers</h3>
+            <ServiceProviderList ServiceProviders="ServiceProviders" Id="id" OnValidSubmit="showedit" />
+            <div class="col-md-3" style="padding-left:0px;">
+                <Pagination ActualPage="actualpage" TotalPages="totalpages" SelectedPage="selectedpage" />
+            </div>
+        </div>
 
 
+
+        @if (isnew && id == 0)
+        {
+            <ServiceProviderForm OnValidSubmit="AddServiceProvider" newServiceProvider="newServiceProvider" option="Create"></ServiceProviderForm>
+        }
+
+        else
+        {
+            <button class="btn btn-outline-info" @onclick="shownew">Add Service Provider</button>
+        }
+
+        @if (id != 0)
+        {
+            <ServiceProviderForm OnValidSubmit="EditServiceProvider" newServiceProvider="newServiceProvider" option="Edit"></ServiceProviderForm>
+
+        }
+
+        </Authorized>
+</AuthorizeView>
 
 @code {
 
@@ -37,7 +42,7 @@ else
 
     private bool isedit;
 
-    int id=0;
+    int id = 0;
     private ServiceProvider newServiceProvider = new ServiceProvider();
     private List<ServiceProvider> ServiceProviders;
 
@@ -57,11 +62,15 @@ else
         {
             ServiceProviders = responsehttp.Response;
             var count = responsehttp.HttpResponseMessage.Headers.GetValues("countrecords").FirstOrDefault();
-            totalpages= int.Parse(responsehttp.HttpResponseMessage.Headers.GetValues("totalpages").FirstOrDefault());
+            totalpages = int.Parse(responsehttp.HttpResponseMessage.Headers.GetValues("totalpages").FirstOrDefault());
+        }
+        else
+        {
+            toastService.ShowError(responsehttp.HttpResponseMessage.StatusCode.ToString(), "Error!");
         }
     }
 
-    private int actualpage=1;
+    private int actualpage = 1;
 
     private int totalpages;
 
@@ -91,7 +100,7 @@ else
 
 
 
-    private async Task  AddServiceProvider()
+    private async Task AddServiceProvider()
     {
 
 

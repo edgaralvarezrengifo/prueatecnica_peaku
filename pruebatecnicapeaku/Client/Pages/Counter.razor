@@ -2,30 +2,33 @@
 
 @inject IRepository repository
 @inject IToastService toastService
+<AuthorizeView>
+    <Authorized>
+        <div>
+            <h3>Services</h3>
+            <ServiceList Services="Services" OnValidSubmit="showedit" />
+            <div class="col-md-3" style="padding-left:0px;">
+                <Pagination ActualPage="actualpage" TotalPages="totalpages" SelectedPage="selectedpage" />
+            </div>
+        </div>
 
-<div>
-    <h3>Services</h3>
-    <ServiceList Services="Services" OnValidSubmit="showedit" />
-    <div class="col-md-3" style="padding-left:0px;">
-        <Pagination ActualPage="actualpage" TotalPages="totalpages" SelectedPage="selectedpage" />
-    </div>
-</div>
+        @if (isnew && id == 0)
+        {
+            <ServiceForm OnValidSubmit="AddServiceProvider" newService="newService" ServiceProviders="ServiceProviders" option="Create"></ServiceForm>
+        }
 
-@if (isnew && id == 0)
-{
-    <ServiceForm OnValidSubmit="AddServiceProvider" newService="newService" ServiceProviders="ServiceProviders" option="Create"></ServiceForm>
-}
+        else
+        {
+            <button class="btn btn-outline-info" @onclick="shownew">Add Service</button>
+        }
 
-else
-{
-    <button class="btn btn-outline-info" @onclick="shownew">Add Service</button>
-}
+        @if (id != 0)
+        {
+            <ServiceForm OnValidSubmit="EditServiceProvider" newService="newService" ServiceProviders="ServiceProviders" option="Edit"></ServiceForm>
 
-@if (id != 0)
-{
-    <ServiceForm OnValidSubmit="EditServiceProvider" newService="newService" ServiceProviders="ServiceProviders" option="Edit"></ServiceForm>
-
-}
+        }
+    </Authorized>
+</AuthorizeView>
 
 @code {
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pruebatecnicapeaku.Server.Helpers;
 using pruebatecnicapeaku.Server.Models;
@@ -13,6 +15,7 @@ namespace pruebatecnicapeaku.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ServiceController: ControllerBase
     {
         private readonly ApplicationDbContext context;
